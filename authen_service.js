@@ -2,6 +2,7 @@ var express = require('express');
 const bodyParser = require("body-parser");
 const session = require('express-session');
 const cookieParser = require("cookie-parser");
+require('dotenv').config();
 
 const app = express()
 
@@ -66,7 +67,7 @@ app.post('/test_adduser', function(req, res) {
     console.log('test_adduser worked')
     console.log(req.body)
         // res.send("user: " + req.body.username + " " + req.body.token)
-
+    console.log(process.env.MYSQL_host)
     var con = mysql.createPool({
         host: process.env.MYSQL_host,
         user: process.env.MYSQL_user,
@@ -104,8 +105,8 @@ app.post('/test_adduser', function(req, res) {
                     console.log(error)
                     res.send(error)
                 };
-
-                // Don't use the connection here, it has been returned to the pool.
+                res.send('success')
+                    // Don't use the connection here, it has been returned to the pool.
             });
         });
     } catch (err) {
@@ -336,7 +337,7 @@ app.post('/add', function(req, res) {
     username = req.body.username
     password = req.body.password
     email = req.body.email
-        // sql = `INSERT INTO heroku_167ea041d1b799b.authen_user (username, password, email) VALUES ("${username}", "${password}", "${email}")`
+        // sql = `INSERT INTO heroku_167ea041d1b799b.master_authen (username, password, email) VALUES ("${username}", "${password}", "${email}")`
         // console.log(sql)
         // res.send('ok')
 
@@ -345,7 +346,7 @@ app.post('/add', function(req, res) {
             throw err
         }
         console.log("connect")
-        sql = `INSERT INTO heroku_167ea041d1b799b.authen_user (username, password, email) VALUES ("${username}", "${password}", "${email}");`
+        sql = `INSERT INTO heroku_167ea041d1b799b.master_authen (username, password, email) VALUES ("${username}", "${password}", "${email}");`
         con.query(sql, function(err, result) {
             if (err) {
                 throw err
@@ -383,7 +384,7 @@ app.post('/check', function(req, res) {
             throw err
         }
         console.log("connect")
-        sql = `select * from heroku_167ea041d1b799b.authen_user where username = "${username}" and password = "${password}";`
+        sql = `select * from heroku_167ea041d1b799b.master_authen where username = "${username}" and password = "${password}";`
         con.query(sql, function(err, result) {
             if (err) {
                 throw err
@@ -425,7 +426,7 @@ app.get('/', function(req, res) {
             throw err
         }
         console.log("connect")
-        sql = "select * from heroku_167ea041d1b799b.authen_user"
+        sql = "select * from heroku_167ea041d1b799b.master_authen"
         con.query(sql, function(err, result) {
             if (err) {
                 throw err
